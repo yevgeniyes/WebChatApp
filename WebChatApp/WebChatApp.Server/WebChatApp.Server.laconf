@@ -1,0 +1,41 @@
+﻿application
+{
+	test-service-node="sync://localhost:8040"
+
+    glue
+    {   
+        bindings
+        {
+            binding
+            {
+                name="sync"
+                type="NFX.Glue.Native.SyncBinding, NFX"
+				client-transport
+				{
+					rcv-buf-size=131072
+					snd-buf-size=131072
+					rcv-timeout=15000
+					snd-timeout=15000
+				}
+            }
+        }
+    }
+
+    wave
+    {
+        server
+        {
+            prefix { name="http://+:8080/" }
+
+            dispatcher
+            {
+                handler
+                {
+                    type="NFX.Wave.Handlers.MVCHandler, NFX.Wave"            
+                    type-location { assembly="WebChatApp.Server.exe" ns { name="WebChatApp.Server.Controllers" } }                                            
+                    match { path="/{type=Chat}/{mvc-action=Login}" var { query-name="*" } }
+                }
+            }
+        }
+    }
+}
