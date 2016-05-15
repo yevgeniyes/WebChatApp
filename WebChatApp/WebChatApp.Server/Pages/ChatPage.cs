@@ -93,31 +93,63 @@ a {
 </style>
 <script type=""text/javascript"" src=""http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js""></script>
 <script type=""text/javascript"">
-var clientName = ";
-        private const string _66_S_LITERAL_1 = @";
-var token = ";
-        private const string _66_S_LITERAL_2 = @";
+var clientName = '";
+        private const string _66_S_LITERAL_1 = @"';
+var token = '";
+        private const string _66_S_LITERAL_2 = @"';
+var clientChatSession = [];
 
-$(""#submitmsg"").click(function(){
-var message = $(""#usermsg"").val();
-     putMessage(token, message);       
-
-}
-function putMessage(token, message) {
-    var request = new XMLHttpRequest();
-    request.open(""POST"", ""/Chat/PutMessage?token="" + token + ""&message="" + message);
-    request.onreadystatechange = function() {
+function requestNewMessages(){
+	var lastMsgID = getLastMessageID();
+	var request = new XMLHttpRequest();
+	request.open(""GET"", '/Chat/RequestNewMessages?guid=' + token + '&lastMsgID=' + lastMsgID, true);
+	request.send();
+	request.onreadystatechange = function() {
     if (request.readyState == 4 && request.status == 200) {
-        
+            if(request.responseText != null) {
+			    var newMessages = JSON.parse(request.responseText);
+			    clientChatSession.push(newMessages);
+                }
         }
     }
-    request.send();
+}
+
+function getLastMessageID(){
+	if (clientChatSession.length == 0){
+		return 0;
+	}
+	else{
+		return clientChatSession[clientChatSession.length - 1].Id;
+	}
 }
 </script>
 <script type=""text/javascript"">
 // jQuery Document
 $(document).ready(function(){
- 
+
+setInterval(requestNewMessages(), 1000);
+
+$(""#submitmsg"").click(function(){
+var clientmsg = $(""#usermsg"").val();
+	var request = new XMLHttpRequest();
+	request.open(""GET"", '/Chat/PutMessage?guid=' + token + '&msg=' + clientmsg, true);
+    request.send();
+	request.onreadystatechange = function() {
+    if (request.readyState == 4 && request.status == 200) {
+        
+        }
+    }
+    $(""#usermsg"").attr(""value"", """");
+});
+
+$(""#exit"").click(function(){
+		var exit = confirm(""Are you sure you want to end the session?"");
+		if(exit==true){
+        window.location = '/Chat/Login';
+        }
+        else return;
+});
+
 });
 </script>
 </head>
@@ -126,15 +158,15 @@ $(document).ready(function(){
     <div id=""menu"">
         <p class=""welcome"">Welcome, <b>";
         private const string _66_S_LITERAL_3 = @"</b></p>
-        <p class=""logout""><a id=""exit"" href=""/Chat/Login"">Exit Chat</a></p>
+        <p class=""logout""><a id=""exit"" href="""">Exit Chat</a></p>
         <div style=""clear:both""></div>
     </div>
      
     <div id=""chatbox""></div>
      
-    <form name=""message"" action="""">
+    <form name=""message"">
         <input name=""usermsg"" type=""text"" id=""usermsg"" size=""63"" />
-        <input name=""submitmsg"" type=""submit""  id=""submitmsg"" value=""Send"" />
+        <input name=""submitmsg"" type=""button""  id=""submitmsg"" value=""Send"" />
     </form>
 </div>
 </body>

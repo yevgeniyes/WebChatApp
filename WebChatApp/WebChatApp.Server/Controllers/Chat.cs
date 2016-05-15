@@ -5,6 +5,11 @@ using NFX.ApplicationModel;
 using NFX;
 using NFX.Environment;
 using WebChatApp.Server.Services;
+using WebChatApp.Contracts;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization.Json;
+using System.IO;
 
 namespace WebChatApp.Server.Controllers
 {
@@ -84,13 +89,14 @@ namespace WebChatApp.Server.Controllers
         }
 
         [Action]
-        public void PutMessage(Guid token, string message)
+        public void PutMessage(string guid, string msg)
         {
+            Guid token = Guid.Parse(guid);
             try
             {
                 using (var client = new ChatServiceClient(m_TestServiceNode))
                 {
-                    if (!client.PutMessage(token, message))
+                    if (!client.PutMessage(token, msg))
                     {
                         //Console.WriteLine(UIMessages.SESSION_LOST);
                         //Login();
@@ -100,6 +106,38 @@ namespace WebChatApp.Server.Controllers
             catch (Exception error)
             {
                 return;
+            }
+        }
+
+        [Action]
+        public object RequestNewMessages(string guid, int lastMsgID)
+        {
+            Guid token = Guid.Parse(guid);
+            try
+            {
+                using (var client = new MessageServiceClient(m_TestServiceNode))
+                {
+                    List<Message> newMessages = client.RequestMessages(token, lastMsgID);
+
+                    if (newMessages == null) return null;
+                    if (newMessages.Any<Message>())
+                    {
+                        //ClientContext.ChatSession.AddRange(newMessages);
+                        //serialize to json and send to client
+                        DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(List<Message>));
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            jsonFormatter.WriteObject(stream, newMessages);
+                            var stm = stream.ToString();
+                            return stm;
+                        }
+                    }
+                    return null;
+                }
+            }
+            catch (Exception error)
+            {
+                return null;
             }
         }
     }
