@@ -1,7 +1,6 @@
 ﻿using System;
 using NFX.Wave.MVC;
 using WebChatApp.Server.Pages;
-using NFX.ApplicationModel;
 using NFX;
 using NFX.Environment;
 using WebChatApp.Server.Services;
@@ -16,72 +15,33 @@ namespace WebChatApp.Server.Controllers
 {
     class Chat : Controller
     {
-        [Config("$test-service-node")]
-        private string m_TestServiceNode = "sync://localhost:8040";
+        [Config("$chat-service-node")]
+        private string m_ChatServiceNode;
 
         private object threadLock = new object();
 
-        [Action]
-        public object Login()
+        public Chat()
         {
-            return new LoginPage();
+            ConfigAttribute.Apply(this, App.ConfigRoot);
         }
 
         [Action]
-        public object Registration()
-        {
-            return new RegistrationPage();
-        }
-
-        [Action]
-        public object Register(string name)
+        public object Launch(string name)
         {
             lock (threadLock)
             {
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    return new RegistrationPage { ErrorMessage = UIMessages.EMPTY_STRING };
-                }
-                try
-                {
-                    using (var client = new RegistrationServiceClient(m_TestServiceNode))
-                    {
-                        if (!client.Register(name))
-                        {
-                            return new RegistrationPage { ErrorMessage = UIMessages.REG_FAILURE };
-                        }
-                        else
-                        {
-                            return new RegistrationPage { ErrorMessage = UIMessages.REG_SUCCESS };
-                        }
-                    }
-                }
-                catch (Exception error)
-                {
-                    return new RegistrationPage { ErrorMessage = "Server error: " + error.Message };
-                }
-            }
-        }
-
-        [Action]
-        public object StartChat(string name)
-        {
-            lock (threadLock)
-            {
-                if (string.IsNullOrWhiteSpace(name))
-                {
+                    //use js
                     return new LoginPage { ErrorMessage = UIMessages.EMPTY_STRING };
                 }
                 try
                 {
-                    using (var client = new LoginServiceClient(m_TestServiceNode))
+                    using (var client = new LoginServiceClient(m_ChatServiceNode))
                     {
                         var token = client.Login(name);
                         if (token != Guid.Empty)
                         {
-                            //use js for this
-                            //ClientContext.Name = name;
-                            //ClientContext.Token = token;
                             return new ChatPage { Name = name, Token = token };
                         }
                         else
@@ -98,25 +58,25 @@ namespace WebChatApp.Server.Controllers
         }
 
         [Action]
-        public void PutMessage(string guid, string msg)
+        public string PutMessage(string guid, string msg)
         {
             lock (threadLock)
             {
                 Guid token = Guid.Parse(guid);
                 try
                 {
-                    using (var client = new ChatServiceClient(m_TestServiceNode))
+                    using (var client = new ChatServiceClient(m_ChatServiceNode))
                     {
-                        if (!client.PutMessage(token, msg))
+                        if (client.PutMessage(token, msg))
                         {
-                            //Console.WriteLine(UIMessages.SESSION_LOST);
-                            //Login();
+                            return "delivered";
                         }
+                        else return null;
                     }
                 }
                 catch (Exception error)
                 {
-                    return;
+                    return null;
                 }
             }    
         }
@@ -129,7 +89,7 @@ namespace WebChatApp.Server.Controllers
                 Guid token = Guid.Parse(guid);
                 try
                 {
-                    using (var client = new MessageServiceClient(m_TestServiceNode))
+                    using (var client = new MessageServiceClient(m_ChatServiceNode))
                     {
                         List<Message> newMessages = client.RequestMessages(token, lastMsgID);
 
@@ -151,6 +111,26 @@ namespace WebChatApp.Server.Controllers
                 catch (Exception error)
                 {
                     return null;
+                }
+            }
+        }
+
+        [Action]
+        public void Logout(string guid)
+        {
+            lock (threadLock)
+            {
+                Guid token = Guid.Parse(guid);
+                try
+                {
+                    using(var client = new LogoutServiceClient(m_ChatServiceNode))
+                    {
+                        client.Logout(token);
+                    }
+                }
+                catch(Exception error)
+                {
+                    
                 }
             }
         }

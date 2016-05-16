@@ -68,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IChatService.cs" />
     <Compile Include="Services\ILoginService.cs" />
+    <Compile Include="Services\ILogoutService.cs" />
     <Compile Include="Services\IMessageRequestService.cs" />
     <Compile Include="Services\IRegistrationService.cs" />
   </ItemGroup>

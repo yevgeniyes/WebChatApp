@@ -1,6 +1,6 @@
 ﻿application
 {
-	test-service-node="sync://localhost:8040"
+	chat-service-node="sync://localhost:8040"
 
     glue
     {   
@@ -33,7 +33,7 @@
                 {
                     type="NFX.Wave.Handlers.MVCHandler, NFX.Wave"            
                     type-location { assembly="WebChatApp.Server.exe" ns { name="WebChatApp.Server.Controllers" } }                                            
-                    match { path="/{type=Chat}/{mvc-action=Login}" var { query-name="*" } }
+                    match { path="/{type=Login}/{mvc-action=Index}" var { query-name="*" } }
                 }
             }
         }

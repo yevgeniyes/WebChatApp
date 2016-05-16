@@ -102,14 +102,14 @@ a {
 </head>
 <body>
 <div id=""loginform"">
-    <form action=""/Chat/Register?"">
+    <form action=""/Registration/Register?"">
         <p>Please enter the name you want to register:</p>
         <label for=""name"">Name:</label>
         <input type=""text"" name=""name"" id=""name"" />
         <input type=""submit"" name=""enter"" id=""enter"" value=""Registration"" />";
         private const string _66_S_LITERAL_1 = @"
         </form>
-	        <form action=""/Chat/Login"">
+	        <form action=""/Login/Index"">
             <input type=""submit"" name=""registration"" id=""registration"" value=""Login"" />
         </form>
     </div>

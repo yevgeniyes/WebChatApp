@@ -131,14 +131,14 @@ namespace WebChatApp.Server.Pages
 </head>
 <body>
     <div id=""loginform"">
-        <form action=""/Chat/StartChat?"">
-            <p>Please enter your name to start chat:</p>
+        <form action=""/Chat/Launch?"">
+            <p>Please enter user name to start chat:</p>
             <label for=""name"">Name:</label>
             <input type=""text"" name=""name"" id=""name"" />
             <input type=""submit"" name=""enter"" id=""enter"" value=""Login"" />";
         private const string _66_S_LITERAL_1 = @"
         </form>
-        <form action=""/Chat/Registration"">
+        <form action=""/Registration/Index"">
             <input type=""submit"" name=""registration"" id=""registration"" value=""Registration"" />
         </form>
     </div>

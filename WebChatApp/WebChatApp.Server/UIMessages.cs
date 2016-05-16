@@ -12,5 +12,6 @@ namespace WebChatApp.Server
         public const string REG_FAILURE = "Registration error. This user is already registered";
         public const string REG_SUCCESS = "Congratulations! User successfully registered";
         public const string EMPTY_STRING = "There is no any text here... Write something and try again";
+        public const string SESSION_LOST = "Current session was lost. Relogin to continue";
     }
 }

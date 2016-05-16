@@ -26,7 +26,8 @@
                 contract-servers=$"WebChatApp.ChatServer.Services.LoginService, WebChatApp.ChatServer;
 									WebChatApp.ChatServer.Services.ChatService, WebChatApp.ChatServer;
 									WebChatApp.ChatServer.Services.MessageRequestService, WebChatApp.ChatServer;
-									WebChatApp.ChatServer.Services.RegistrationService, WebChatApp.ChatServer"
+									WebChatApp.ChatServer.Services.RegistrationService, WebChatApp.ChatServer;
+									WebChatApp.ChatServer.Services.LogoutService, WebChatApp.ChatServer"
             }
         }
     }	

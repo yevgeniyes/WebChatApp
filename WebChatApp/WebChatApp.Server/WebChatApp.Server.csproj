@@ -69,6 +69,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\Chat.cs" />
+    <Compile Include="Controllers\Login.cs" />
+    <Compile Include="Controllers\Registration.cs" />
     <Compile Include="Pages\ChatPage.cs" />
     <Compile Include="Pages\RegistrationPage.cs" />
     <Compile Include="Program.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="ServerContext.cs" />
     <Compile Include="Services\ChatServiceClient.cs" />
     <Compile Include="Services\LoginServiceClient.cs" />
+    <Compile Include="Services\LogoutServiceClient.cs" />
     <Compile Include="Services\MessageServiceClient.cs" />
     <Compile Include="Services\RegistrationServiceClient.cs" />
     <Compile Include="UIMessages.cs" />

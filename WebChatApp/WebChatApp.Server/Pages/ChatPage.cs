@@ -50,7 +50,7 @@ a {
     color:#0000FF;
     text-decoration:none; }
   
-    a:hover { text-decoration:underline; }
+    a:hover { font-weight: bolder; }
   
 #wrapper, #loginform {
     margin:0 auto;
@@ -104,12 +104,14 @@ function submitMessage(){
 	var request = new XMLHttpRequest();
 	request.open(""GET"", '/Chat/PutMessage?guid=' + token + '&msg=' + clientmsg, true);
     request.send();
-	request.onreadystatechange = function() {
+	$(""#usermsg"").attr(""value"", """").focus();
+    request.onreadystatechange = function() {
     if (request.readyState == 4 && request.status == 200) {
-        
+            if(request.responseText != 'delivered'){
+                window.location = '/Login/Index';
+                }
             }
         }
-    $(""#usermsg"").attr(""value"", """").focus();
 }
 
 function requestNewMessages(){
@@ -156,6 +158,12 @@ if(newscrollHeight > oldscrollHeight){
 				}
 }
 
+function endSession(){
+	var request = new XMLHttpRequest();
+	request.open(""GET"", '/Chat/Logout?guid=' + token, false);
+    request.send();
+}
+
 </script>
 <script type=""text/javascript"">
 // jQuery Document
@@ -170,9 +178,10 @@ $(""#submitmsg"").click(function(){
 });
 
 $(""#exit"").click(function(){
-		var exit = confirm(""Are you sure you want to end the session?"");
+		var exit = confirm(""Are you sure you want to end session?"");
 		if(exit==true){
-        window.location = '/Chat/Login';
+        window.location = '/Login/Index';
+        endSession();
         }
         else {
         $(""#usermsg"").focus();
@@ -194,7 +203,7 @@ $('#usermsg').keyup(function(event){
     <div id=""menu"">
         <p class=""welcome"">Welcome, <b>";
         private const string _66_S_LITERAL_3 = @"</b></p>
-        <p class=""logout""><a id=""exit"" href="""">Logout</a></p>
+        <p class=""logout""><a id=""exit"" href="""" >Logout</a></p>
         <div style=""clear:both""></div>
     </div>
      
