@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.IO;
+using System.Text;
 
 namespace WebChatApp.Server.Controllers
 {
@@ -17,6 +18,8 @@ namespace WebChatApp.Server.Controllers
     {
         [Config("$test-service-node")]
         private string m_TestServiceNode = "sync://localhost:8040";
+
+        private object threadLock = new object();
 
         [Action]
         public object Login()
@@ -33,111 +36,122 @@ namespace WebChatApp.Server.Controllers
         [Action]
         public object Register(string name)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            lock (threadLock)
             {
-                return new RegistrationPage { ErrorMessage = UIMessages.EMPTY_STRING };
-            }
-            try
-            {
-                using (var client = new RegistrationServiceClient(m_TestServiceNode))
+                if (string.IsNullOrWhiteSpace(name))
                 {
-                    if (!client.Register(name))
+                    return new RegistrationPage { ErrorMessage = UIMessages.EMPTY_STRING };
+                }
+                try
+                {
+                    using (var client = new RegistrationServiceClient(m_TestServiceNode))
                     {
-                        return new RegistrationPage { ErrorMessage = UIMessages.REG_FAILURE };
-                    }
-                    else
-                    {
-                        return new RegistrationPage { ErrorMessage = UIMessages.REG_SUCCESS };
+                        if (!client.Register(name))
+                        {
+                            return new RegistrationPage { ErrorMessage = UIMessages.REG_FAILURE };
+                        }
+                        else
+                        {
+                            return new RegistrationPage { ErrorMessage = UIMessages.REG_SUCCESS };
+                        }
                     }
                 }
-            }
-            catch (Exception error)
-            {
-                return new RegistrationPage { ErrorMessage = "Server error: " + error.Message };
+                catch (Exception error)
+                {
+                    return new RegistrationPage { ErrorMessage = "Server error: " + error.Message };
+                }
             }
         }
 
         [Action]
         public object StartChat(string name)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            lock (threadLock)
             {
-                return new LoginPage { ErrorMessage = UIMessages.EMPTY_STRING };
-            }
-            try
-            {
-                using (var client = new LoginServiceClient(m_TestServiceNode))
+                if (string.IsNullOrWhiteSpace(name))
                 {
-                    var token = client.Login(name);
-                    if (token != Guid.Empty)
+                    return new LoginPage { ErrorMessage = UIMessages.EMPTY_STRING };
+                }
+                try
+                {
+                    using (var client = new LoginServiceClient(m_TestServiceNode))
                     {
-                        //use js for this
-                        //ClientContext.Name = name;
-                        //ClientContext.Token = token;
-                        return new ChatPage { Name = name, Token = token };
-                    }
-                    else
-                    {
-                        return new LoginPage { ErrorMessage = UIMessages.ERROR_WRONG_NAME };
+                        var token = client.Login(name);
+                        if (token != Guid.Empty)
+                        {
+                            //use js for this
+                            //ClientContext.Name = name;
+                            //ClientContext.Token = token;
+                            return new ChatPage { Name = name, Token = token };
+                        }
+                        else
+                        {
+                            return new LoginPage { ErrorMessage = UIMessages.ERROR_WRONG_NAME };
+                        }
                     }
                 }
-            }
-            catch (Exception error)
-            {
-                return new LoginPage { ErrorMessage = "Server error: " + error.Message };
-            }
+                catch (Exception error)
+                {
+                    return new LoginPage { ErrorMessage = "Server error: " + error.Message };
+                }
+            } 
         }
 
         [Action]
         public void PutMessage(string guid, string msg)
         {
-            Guid token = Guid.Parse(guid);
-            try
+            lock (threadLock)
             {
-                using (var client = new ChatServiceClient(m_TestServiceNode))
+                Guid token = Guid.Parse(guid);
+                try
                 {
-                    if (!client.PutMessage(token, msg))
+                    using (var client = new ChatServiceClient(m_TestServiceNode))
                     {
-                        //Console.WriteLine(UIMessages.SESSION_LOST);
-                        //Login();
+                        if (!client.PutMessage(token, msg))
+                        {
+                            //Console.WriteLine(UIMessages.SESSION_LOST);
+                            //Login();
+                        }
                     }
                 }
-            }
-            catch (Exception error)
-            {
-                return;
-            }
+                catch (Exception error)
+                {
+                    return;
+                }
+            }    
         }
 
         [Action]
         public object RequestNewMessages(string guid, int lastMsgID)
         {
-            Guid token = Guid.Parse(guid);
-            try
+            lock (threadLock)
             {
-                using (var client = new MessageServiceClient(m_TestServiceNode))
+                Guid token = Guid.Parse(guid);
+                try
                 {
-                    List<Message> newMessages = client.RequestMessages(token, lastMsgID);
-
-                    if (newMessages == null) return null;
-                    if (newMessages.Any<Message>())
+                    using (var client = new MessageServiceClient(m_TestServiceNode))
                     {
-                        //ClientContext.ChatSession.AddRange(newMessages);
-                        //serialize to json and send to client
-                        DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(List<Message>));
-                        using (MemoryStream stream = new MemoryStream())
+                        List<Message> newMessages = client.RequestMessages(token, lastMsgID);
+
+                        if (newMessages == null) return null;
+                        if (newMessages.Any<Message>())
                         {
-                            jsonFormatter.WriteObject(stream, newMessages);
-                            var stm = stream.ToString();
-                            return stm;
+                            DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(List<Message>));
+                            using (MemoryStream stream = new MemoryStream())
+                            {
+                                jsonFormatter.WriteObject(stream, newMessages);
+                                var bytes = stream.ToArray();
+                                var str = Encoding.UTF8.GetString(bytes);
+                                return str;
+                            }
                         }
+                        return null;
                     }
+                }
+                catch (Exception error)
+                {
                     return null;
                 }
-            }
-            catch (Exception error)
-            {
-                return null;
             }
         }
     }

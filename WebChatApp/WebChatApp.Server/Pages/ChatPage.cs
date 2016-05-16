@@ -100,6 +100,7 @@ var token = '";
 var clientChatSession = [];
 
 function requestNewMessages(){
+    var oldscrollHeight = $('#chatbox').attr('scrollHeight') - 20;
 	var lastMsgID = getLastMessageID();
 	var request = new XMLHttpRequest();
 	request.open(""GET"", '/Chat/RequestNewMessages?guid=' + token + '&lastMsgID=' + lastMsgID, true);
@@ -108,7 +109,10 @@ function requestNewMessages(){
     if (request.readyState == 4 && request.status == 200) {
             if(request.responseText != null) {
 			    var newMessages = JSON.parse(request.responseText);
-			    clientChatSession.push(newMessages);
+			    for (var i = 0; i < newMessages.length; i++){
+	                    clientChatSession.push(newMessages[i])
+                    }
+                updateMessageBox(newMessages, oldscrollHeight);
                 }
         }
     }
@@ -122,12 +126,29 @@ function getLastMessageID(){
 		return clientChatSession[clientChatSession.length - 1].Id;
 	}
 }
+
+function updateMessageBox(newMessages, oldscrollHeight){
+	var msgBox = document.getElementById('chatbox');
+	for (var i = 0; i < newMessages.length; i++){
+	var newMsg = document.createElement('div');
+	var content = newMessages[i].Content;
+	var name = newMessages[i].Name;
+	var time = newMessages[i].Time;
+	newMsg.innerHTML = name + ': ' + content;
+	msgBox.appendChild(newMsg);
+    }
+var newscrollHeight = $('#chatbox').attr('scrollHeight') - 20;
+if(newscrollHeight > oldscrollHeight){
+					$('#chatbox').animate({ scrollTop: newscrollHeight }, 'normal');
+				}
+}
+
 </script>
 <script type=""text/javascript"">
 // jQuery Document
 $(document).ready(function(){
 
-setInterval(requestNewMessages(), 1000);
+setInterval(requestNewMessages, 2500);
 
 $(""#submitmsg"").click(function(){
 var clientmsg = $(""#usermsg"").val();
