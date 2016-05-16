@@ -122,7 +122,12 @@ namespace WebChatApp.Server.Pages
         }
     </style>
     <script src=""http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js""></script>
-
+    <script type=""text/javascript"">
+    // jQuery Document
+    $(document).ready(function(){
+    $(""#name"").focus();
+    });
+    </script>
 </head>
 <body>
     <div id=""loginform"">

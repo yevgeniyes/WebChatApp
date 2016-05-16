@@ -99,6 +99,19 @@ var token = '";
         private const string _66_S_LITERAL_2 = @"';
 var clientChatSession = [];
 
+function submitMessage(){
+	var clientmsg = $(""#usermsg"").val();
+	var request = new XMLHttpRequest();
+	request.open(""GET"", '/Chat/PutMessage?guid=' + token + '&msg=' + clientmsg, true);
+    request.send();
+	request.onreadystatechange = function() {
+    if (request.readyState == 4 && request.status == 200) {
+        
+            }
+        }
+    $(""#usermsg"").attr(""value"", """").focus();
+}
+
 function requestNewMessages(){
     var oldscrollHeight = $('#chatbox').attr('scrollHeight') - 20;
 	var lastMsgID = getLastMessageID();
@@ -134,7 +147,7 @@ function updateMessageBox(newMessages, oldscrollHeight){
 	var content = newMessages[i].Content;
 	var name = newMessages[i].Name;
 	var time = newMessages[i].Time;
-	newMsg.innerHTML = name + ': ' + content;
+	newMsg.innerHTML = '<b>' + name + '</b>: <i>' + content + '</i> (' + time + ')';
 	msgBox.appendChild(newMsg);
     }
 var newscrollHeight = $('#chatbox').attr('scrollHeight') - 20;
@@ -148,19 +161,12 @@ if(newscrollHeight > oldscrollHeight){
 // jQuery Document
 $(document).ready(function(){
 
+$(""#usermsg"").focus();
+
 setInterval(requestNewMessages, 2500);
 
 $(""#submitmsg"").click(function(){
-var clientmsg = $(""#usermsg"").val();
-	var request = new XMLHttpRequest();
-	request.open(""GET"", '/Chat/PutMessage?guid=' + token + '&msg=' + clientmsg, true);
-    request.send();
-	request.onreadystatechange = function() {
-    if (request.readyState == 4 && request.status == 200) {
-        
-        }
-    }
-    $(""#usermsg"").attr(""value"", """");
+    submitMessage();
 });
 
 $(""#exit"").click(function(){
@@ -168,8 +174,17 @@ $(""#exit"").click(function(){
 		if(exit==true){
         window.location = '/Chat/Login';
         }
-        else return;
+        else {
+        $(""#usermsg"").focus();
+        return false;
+        }
 });
+
+$('#usermsg').keyup(function(event){
+    if(event.keyCode == 13){
+        submitMessage();
+        }
+    });
 
 });
 </script>
@@ -179,13 +194,13 @@ $(""#exit"").click(function(){
     <div id=""menu"">
         <p class=""welcome"">Welcome, <b>";
         private const string _66_S_LITERAL_3 = @"</b></p>
-        <p class=""logout""><a id=""exit"" href="""">Exit Chat</a></p>
+        <p class=""logout""><a id=""exit"" href="""">Logout</a></p>
         <div style=""clear:both""></div>
     </div>
      
     <div id=""chatbox""></div>
      
-    <form name=""message"">
+    <form name=""message"" onsubmit=""return false;"">
         <input name=""usermsg"" type=""text"" id=""usermsg"" size=""63"" />
         <input name=""submitmsg"" type=""button""  id=""submitmsg"" value=""Send"" />
     </form>

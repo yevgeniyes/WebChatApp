@@ -19,7 +19,7 @@ namespace WebChatApp.ChatServer.Services
                     Message newMessage = new Message();
                     newMessage.Id = ChatServerContext.ChatSession.Count + 1;
                     newMessage.Name = name;
-                    newMessage.Time = DateTime.Now;
+                    newMessage.Time = DateTime.Now.ToShortTimeString();
                     newMessage.Content = message;
                     ChatServerContext.ChatSession.Add(newMessage);
                     return true;
