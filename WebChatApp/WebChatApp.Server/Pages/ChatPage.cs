@@ -119,7 +119,7 @@ function requestNewMessages(){
 	request.send();
 	request.onreadystatechange = function() {
     if (request.readyState == 4 && request.status == 200) {
-            if(request.responseText != null) {
+            if(request.responseText != '') {
 			    var newMessages = JSON.parse(request.responseText);
 			    for (var i = 0; i < newMessages.length; i++){
 	                    clientChatSession.push(newMessages[i])
