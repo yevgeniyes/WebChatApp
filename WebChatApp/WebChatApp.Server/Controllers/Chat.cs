@@ -32,7 +32,6 @@ namespace WebChatApp.Server.Controllers
             {
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    //use js
                     return new LoginPage { ErrorMessage = UIMessages.EMPTY_STRING };
                 }
                 try

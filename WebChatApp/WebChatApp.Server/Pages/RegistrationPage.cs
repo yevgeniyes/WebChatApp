@@ -47,54 +47,21 @@ form, p, span {
   
 input { font:12px arial; }
   
-a {
-    color:#0000FF;
-    text-decoration:none; }
-  
-    a:hover { text-decoration:underline; }
-  
-#wrapper, #loginform {
+#loginform {
     margin:0 auto;
     padding-bottom:25px;
     background:#EBF4FB;
     width:504px;
-    border:1px solid #ACD8F0; }
-  
-#loginform { padding-top:18px; }
-  
+    border:1px solid #ACD8F0;
+    padding-top:18px; }
+
     #loginform p { margin: 5px; }
   
-#chatbox {
-    text-align:left;
-    margin:0 auto;
-    margin-bottom:25px;
-    padding:10px;
-    background:#fff;
-    height:270px;
-    width:430px;
-    border:1px solid #ACD8F0;
-    overflow:auto; }
-  
-#usermsg {
-    width:395px;
-    border:1px solid #ACD8F0; }
-  
-#submit { width: 60px; }
-#registration { margin-top: 10px}
-  
-.error { color: #ff0000; }
-  
-#menu { padding:12.5px 25px 12.5px 25px; }
-  
-.welcome { float:left; }
-  
-.logout { float:right; }
-  
-.msgln { margin:0 0 2px 0; }
+#login { 
+    margin-top: 10px; }  
 </style>
 <script src=""http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js""></script>
     <script type=""text/javascript"">
-    // jQuery Document
     $(document).ready(function(){
     $(""#name"").focus();
     });
@@ -110,7 +77,7 @@ a {
         private const string _66_S_LITERAL_1 = @"
         </form>
 	        <form action=""/Login/Index"">
-            <input type=""submit"" name=""registration"" id=""registration"" value=""Login"" />
+            <input type=""submit"" name=""registration"" id=""login"" value=""Login"" />
         </form>
     </div>
 </body>

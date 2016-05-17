@@ -52,16 +52,12 @@ a {
   
     a:hover { font-weight: bolder; }
   
-#wrapper, #loginform {
+#wrapper {
     margin:0 auto;
     padding-bottom:25px;
     background:#EBF4FB;
     width:504px;
     border:1px solid #ACD8F0; }
-  
-#loginform { padding-top:18px; }
-  
-    #loginform p { margin: 5px; }
   
 #chatbox {
     text-align:left;
@@ -80,15 +76,11 @@ a {
   
 #submit { width: 60px; }
   
-.error { color: #ff0000; }
-  
 #menu { padding:12.5px 25px 12.5px 25px; }
   
 .welcome { float:left; }
   
 .logout { float:right; }
-  
-.msgln { margin:0 0 2px 0; }
 
 </style>
 <script type=""text/javascript"" src=""http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js""></script>
@@ -101,17 +93,22 @@ var clientChatSession = [];
 
 function submitMessage(){
 	var clientmsg = $(""#usermsg"").val();
-	var request = new XMLHttpRequest();
-	request.open(""GET"", '/Chat/PutMessage?guid=' + token + '&msg=' + clientmsg, true);
-    request.send();
-	$(""#usermsg"").attr(""value"", """").focus();
-    request.onreadystatechange = function() {
-    if (request.readyState == 4 && request.status == 200) {
-            if(request.responseText != 'delivered'){
-                window.location = '/Login/Index';
+    if(clientmsg.replace(/\s/g,"""") == """"){
+        $(""#usermsg"").attr(""value"", """").focus();
+    }
+    else{
+        var request = new XMLHttpRequest();
+	    request.open(""GET"", '/Chat/PutMessage?guid=' + token + '&msg=' + clientmsg, true);
+        request.send();
+	    $(""#usermsg"").attr(""value"", """").focus();
+        request.onreadystatechange = function() {
+        if (request.readyState == 4 && request.status == 200) {
+                if(request.responseText != 'delivered'){
+                    window.location.href = 'http://' + window.location.host + '/Login/Index';
+                    }
                 }
             }
-        }
+    }
 }
 
 function requestNewMessages(){
@@ -152,8 +149,8 @@ function updateMessageBox(newMessages, oldscrollHeight){
 	newMsg.innerHTML = '<b>' + name + '</b>: <i>' + content + '</i> (' + time + ')';
 	msgBox.appendChild(newMsg);
     }
-var newscrollHeight = $('#chatbox').attr('scrollHeight') - 20;
-if(newscrollHeight > oldscrollHeight){
+    var newscrollHeight = $('#chatbox').attr('scrollHeight') - 20;
+    if(newscrollHeight > oldscrollHeight){
 					$('#chatbox').animate({ scrollTop: newscrollHeight }, 'normal');
 				}
 }
@@ -164,36 +161,33 @@ function endSession(){
     request.send();
 }
 
-</script>
-<script type=""text/javascript"">
-// jQuery Document
 $(document).ready(function(){
 
-$(""#usermsg"").focus();
+    $(""#usermsg"").focus();
 
-setInterval(requestNewMessages, 2500);
+    setInterval(requestNewMessages, 2500);
 
-$(""#submitmsg"").click(function(){
-    submitMessage();
-});
-
-$(""#exit"").click(function(){
-		var exit = confirm(""Are you sure you want to end session?"");
-		if(exit==true){
-        window.location = '/Login/Index';
-        endSession();
-        }
-        else {
-        $(""#usermsg"").focus();
-        return false;
-        }
-});
-
-$('#usermsg').keyup(function(event){
-    if(event.keyCode == 13){
+    $(""#submitmsg"").click(function(){
         submitMessage();
-        }
     });
+
+    $(""#exit"").click(function(){
+		    var exit = confirm(""Are you sure you want to end session?"");
+		    if(exit==true){
+            window.location.href = 'http://' + window.location.host + '/Login/Index';
+            endSession();
+            }
+            else {
+            $(""#usermsg"").focus();
+            return false;
+            }
+    });
+
+    $('#usermsg').keyup(function(event){
+        if(event.keyCode == 13){
+            submitMessage();
+            }
+        });
 
 });
 </script>
@@ -203,7 +197,7 @@ $('#usermsg').keyup(function(event){
     <div id=""menu"">
         <p class=""welcome"">Welcome, <b>";
         private const string _66_S_LITERAL_3 = @"</b></p>
-        <p class=""logout""><a id=""exit"" href="""" >Logout</a></p>
+        <p class=""logout""><a id=""exit"" href=""/Login/Index"" >Logout</a></p>
         <div style=""clear:both""></div>
     </div>
      
