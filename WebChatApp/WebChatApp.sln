@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebChatApp.Server", "WebChatApp.Server\WebChatApp.Server.csproj", "{4D46C198-918B-494F-AE27-86B43EBFD35D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebChatApp.Contracts", "WebChatApp.Contracts\WebChatApp.Contracts.csproj", "{405F603A-4355-4F5E-B8A2-45A498946539}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebChatApp.ChatServer", "WebChatApp.ChatServer\WebChatApp.ChatServer.csproj", "{DDF1D7B4-8000-40C4-B2E0-35105ABE1369}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebChatApp.ConsoleClient", "WebChatApp.ConsoleClient\WebChatApp.ConsoleClient.csproj", "{3EDF7695-7A25-43CF-983E-E51BDE2D3B29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{DDF1D7B4-8000-40C4-B2E0-35105ABE1369}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDF1D7B4-8000-40C4-B2E0-35105ABE1369}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDF1D7B4-8000-40C4-B2E0-35105ABE1369}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EDF7695-7A25-43CF-983E-E51BDE2D3B29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EDF7695-7A25-43CF-983E-E51BDE2D3B29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EDF7695-7A25-43CF-983E-E51BDE2D3B29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EDF7695-7A25-43CF-983E-E51BDE2D3B29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
