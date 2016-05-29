@@ -1,8 +1,6 @@
-WebChatApp 1.0 (NFX Demo project)
+WebChatApp.Server
 
-Launch as administrator WebChatApp.Server.exe, then launch WebChatApp.ChatServer.exe.
+This server receives requests, processes and returns responses to web page client.
+Administrator privileges required to launch.
 
-To use Web client open "http://localhost:8080/" url in the browser.
-To use Console client launch WebChatApp.ConsoleClient.exe.
-
-To log in WebChatApp register new name via Registration or use default names: zero, xman, alpha, smoke.
+Server node stored in WebChatApp.Server.laconf config file.
